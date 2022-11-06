@@ -1,0 +1,15 @@
+scalar Long
+type Query
+{
+    getTotalOITrendData:TotalOITrendDto
+}
+type Mutation
+{
+    saveTotalOIData(totalCallOI:Int,totalPutOI:Int,time:String):Boolean
+}
+type TotalOITrendDto{
+    totalCallOIList:[Int]
+    totalPutOIList:[Int]
+    timeList:[String]
+}
+

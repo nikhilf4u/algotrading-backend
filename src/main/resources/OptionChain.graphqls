@@ -1,0 +1,27 @@
+type OptionChainDto
+{
+    price:Float
+    openInterest:Int
+    time:String
+    strikePrice:String
+}
+input OptionChainInputDto
+{
+    id:Int
+    price:Float
+    openInterest:Int
+    time:String
+    strikePrice:String
+}
+type OptionChainForStrikePriceDto{
+    priceList:[Float]
+    openInterestList:[Int]
+    timeList:[String]
+}
+extend type Query{
+    getOptionChainData : [OptionChainDto]
+    getOptionChainDataForStrikePrice(strikePrice:String):OptionChainForStrikePriceDto
+}
+extend type Mutation{
+    saveOptionChainData(optionChainInputDtos:[OptionChainInputDto]) : Boolean
+}
