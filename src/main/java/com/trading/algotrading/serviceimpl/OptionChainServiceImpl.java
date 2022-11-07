@@ -2,9 +2,7 @@ package com.trading.algotrading.serviceimpl;
 
 
 import com.trading.algotrading.dao.OptionChainDao;
-import com.trading.algotrading.dto.OptionChainDto;
-import com.trading.algotrading.dto.OptionChainForStrikePriceDto;
-import com.trading.algotrading.dto.OptionChainInputDto;
+import com.trading.algotrading.dto.*;
 import com.trading.algotrading.model.OptionChain;
 import com.trading.algotrading.service.OptionChainService;
 import org.modelmapper.ModelMapper;
@@ -58,5 +56,23 @@ public class OptionChainServiceImpl implements OptionChainService {
         optionChainForStrikePriceDto.setTimeList(timeList);
         optionChainForStrikePriceDto.setOpenInterestList(openInterestList);
         return optionChainForStrikePriceDto;
+    }
+
+    @Override
+    public OIChangeDto getChangeInOIForIndex(String index){
+        List<OIChangeResponseDto> callOIChange=optionChainDao.getTotalCallOI(index);
+        List<OIChangeResponseDto> putOIChange=optionChainDao.getTotalPutOI(index);
+        OIChangeDto oiChangeDto=new OIChangeDto();
+        List<Integer> changeInOI=new ArrayList<>();
+        List<String> timeList=new ArrayList<>();
+        for(int i=0;i<callOIChange.size();i++)
+        {
+            changeInOI.add(putOIChange.get(i).getTotalOpenInterest() -callOIChange.get(i).getTotalOpenInterest());
+            timeList.add(callOIChange.get(i).getTime());
+
+        }
+        oiChangeDto.setOiChangeList(changeInOI);
+        oiChangeDto.setTimeList(timeList);
+        return oiChangeDto;
     }
 }

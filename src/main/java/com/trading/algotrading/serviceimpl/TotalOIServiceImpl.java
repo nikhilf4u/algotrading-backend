@@ -18,8 +18,8 @@ public class TotalOIServiceImpl implements TotalOIService {
     TotalOIDao totalOIDao;
 
     @Override
-    public TotalOITrendDto getTotalOITrendData(){
-        List<TotalOIDto> totalOIDtos=totalOIDao.getOITrendData();
+    public TotalOITrendDto getTotalOITrendData(String index){
+        List<TotalOIDto> totalOIDtos=totalOIDao.getOITrendData(index);
         TotalOITrendDto totalOITrendDto=new TotalOITrendDto();
         List<Integer> totalCallOIList=new ArrayList<>();
         List<Integer> totalPutOIList=new ArrayList<>();
@@ -36,12 +36,13 @@ public class TotalOIServiceImpl implements TotalOIService {
     }
 
     @Override
-    public Boolean saveTotalOIData(Integer totalCallOI, Integer totalPutOI, String time)
+    public Boolean saveTotalOIData(Integer totalCallOI, Integer totalPutOI, String time,String index)
     {
         TotalOI totalOI=new TotalOI();
         totalOI.setTotalCallOI(totalCallOI);
         totalOI.setTotalPutOI(totalPutOI);
         totalOI.setTime(time);
+        totalOI.setIndex(index);
         totalOIDao.save(totalOI);
         return true;
     }

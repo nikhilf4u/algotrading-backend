@@ -22,4 +22,6 @@ public class OptionChain {
     private String strikePrice;
     @Column(name="time")
     private String time;
+    @Column(name="index_type")
+    private String index;
 }

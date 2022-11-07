@@ -4,4 +4,5 @@ public interface TotalOIDto {
     public Integer getTotalCallOI();
     public Integer getTotalPutOI();
     public String getTime();
+
 }

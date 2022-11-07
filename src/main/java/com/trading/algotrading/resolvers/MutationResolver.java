@@ -20,8 +20,8 @@ public class MutationResolver implements GraphQLMutationResolver {
     public Boolean saveOptionChainData(List<OptionChainInputDto> optionChainInputDtos){
         return optionChainService.saveOptionChainData(optionChainInputDtos);
     }
-    public Boolean saveTotalOIData(Integer totalCallOI,Integer totalPutOI,String time){
-        return totalOIService.saveTotalOIData(totalCallOI,totalPutOI,time);
+    public Boolean saveTotalOIData(Integer totalCallOI,Integer totalPutOI,String time,String index){
+        return totalOIService.saveTotalOIData(totalCallOI,totalPutOI,time,index);
     }
 
 
