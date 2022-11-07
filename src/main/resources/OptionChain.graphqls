@@ -12,6 +12,7 @@ input OptionChainInputDto
     openInterest:Int
     time:String
     strikePrice:String
+    index:String
 }
 type OptionChainForStrikePriceDto{
     priceList:[Float]
@@ -23,11 +24,11 @@ type OIChangeDto{
     timeList:[String]
 }
 
-extend type Query{
+type Query{
     getOptionChainData : [OptionChainDto]
     getOptionChainDataForStrikePrice(strikePrice:String):OptionChainForStrikePriceDto
     getChangeInOIForIndex(index:String):OIChangeDto
 }
-extend type Mutation{
+type Mutation{
     saveOptionChainData(optionChainInputDtos:[OptionChainInputDto]) : Boolean
 }

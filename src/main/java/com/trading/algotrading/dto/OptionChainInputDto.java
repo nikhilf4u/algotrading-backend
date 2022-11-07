@@ -11,4 +11,5 @@ public class OptionChainInputDto {
     private Integer openInterest;
     private String time;
     private String strikePrice;
+    private String index;
 }
