@@ -24,4 +24,6 @@ public class OptionChain {
     private String time;
     @Column(name="index_type")
     private String index;
+    @Column(name="implied_volatility")
+    private Float impliedVolatility;
 }

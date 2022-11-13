@@ -13,6 +13,7 @@ input OptionChainInputDto
     time:String
     strikePrice:String
     index:String
+    impliedVolatility:Float
 }
 type OptionChainForStrikePriceDto{
     priceList:[Float]
@@ -28,6 +29,7 @@ type Query{
     getOptionChainData : [OptionChainDto]
     getOptionChainDataForStrikePrice(strikePrice:String):OptionChainForStrikePriceDto
     getChangeInOIForIndex(index:String):OIChangeDto
+    getStrikePriceForBuying(underlyingValue:Int,indexType:String,expiryDaysCount:Int):[String]
 }
 type Mutation{
     saveOptionChainData(optionChainInputDtos:[OptionChainInputDto]) : Boolean

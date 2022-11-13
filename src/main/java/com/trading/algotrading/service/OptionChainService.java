@@ -14,4 +14,6 @@ public interface OptionChainService {
     OptionChainForStrikePriceDto getOptionChainDataForStrikePrice(String strikePrice);
 
     OIChangeDto getChangeInOIForIndex(String index);
+
+    List<String> getStrikePriceForBuying(Integer underlyingValue,String indexType,Integer expiryDaysCount);
 }

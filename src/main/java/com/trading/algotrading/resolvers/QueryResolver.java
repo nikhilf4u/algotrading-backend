@@ -27,4 +27,9 @@ public class QueryResolver implements GraphQLQueryResolver {
     {
         return optionChainService.getChangeInOIForIndex(index);
     }
+
+    public  List<String> getStrikePriceForBuying(Integer underlyingValue,String indexType,Integer expiryDaysCount)
+    {
+        return  optionChainService.getStrikePriceForBuying(underlyingValue,indexType,expiryDaysCount);
+    }
 }
