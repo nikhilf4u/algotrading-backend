@@ -2,7 +2,8 @@ package com.trading.algotrading.dao;
 
 import com.trading.algotrading.dto.OIChangeResponseDto;
 import com.trading.algotrading.dto.OptionChainDto;
-import com.trading.algotrading.dto.StrikePriceSelectionDto;
+import com.trading.algotrading.dto.StrikePriceDto;
+import com.trading.algotrading.dto.OpenInterestDto;
 import com.trading.algotrading.model.OptionChain;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +21,8 @@ public interface OptionChainDao extends JpaRepository<OptionChain,Integer> {
     @Query(value="select sum(open_interest) as totalOpenInterest,time as time from option_chain where index_type=?1 and strike_price like '%PE' group by time",nativeQuery = true)
     List<OIChangeResponseDto> getTotalPutOI(String index);
 
-    @Query(value = "SELECT strike_price as strikePrice,implied_volatility as impliedVolatility,open_interest as openInterest FROM option_chain where index_type=?1  order by timestamp desc limit 42",nativeQuery = true)
-    List<StrikePriceSelectionDto> getOptionChainDataForStrikePriceSelection(String indexType);
+    @Query(value = "select strike_price as strikePrice,delta as delta,theta as theta,gamma as gamma,vega as vega,time as time from option_chain where index_type=?1 and  strike_price like ?2 and delta is not null order by time desc limit 42",nativeQuery = true)
+    List<StrikePriceDto> getDataForStrikePriceSelection(String indexType,String optionType);
+    @Query(value = "SELECT open_interest as openInterest,time as time FROM option_chain where strike_price=?1",nativeQuery = true)
+    List<OpenInterestDto> getOpenInterestByStrikePrice(String strikePrice);
 }

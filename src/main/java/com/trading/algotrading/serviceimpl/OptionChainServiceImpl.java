@@ -5,6 +5,7 @@ import com.trading.algotrading.dao.OptionChainDao;
 import com.trading.algotrading.dto.*;
 import com.trading.algotrading.model.OptionChain;
 import com.trading.algotrading.service.OptionChainService;
+import com.trading.algotrading.utils.Constanst;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -31,9 +34,31 @@ public class OptionChainServiceImpl implements OptionChainService {
     @Override
     public Boolean saveOptionChainData(List<OptionChainInputDto> optionChainInputDtos)
     {
+        DecimalFormat formatToTwoDecimal = new DecimalFormat("0.00");
+        DecimalFormat formatToThreeDecimal = new DecimalFormat("0.000");
         List<OptionChain> optionChainList=new ArrayList<OptionChain>();
         for (OptionChainInputDto optionChainInputDto: optionChainInputDtos) {
-            OptionChain optionChain=modelMapper.map(optionChainInputDto,OptionChain.class);
+            OptionChain optionChain=new OptionChain();
+            optionChain.setIndex(optionChainInputDto.getIndex());
+            optionChain.setDaysLeftToExpire(optionChainInputDto.getDaysLeftToExpire());
+            optionChain.setImpliedVolatility(optionChainInputDto.getImpliedVolatility());
+            optionChain.setOpenInterest(optionChainInputDto.getOpenInterest());
+            optionChain.setTime(optionChainInputDto.getTime());
+            optionChain.setStrikePrice(optionChainInputDto.getStrikePrice());
+            optionChain.setPrice(optionChainInputDto.getPrice());
+            Float d1=null,d2=null,delta=null,theta=null,gamma=null,vega=null;
+            if(optionChainInputDto.getImpliedVolatility()!=0) {
+                d1 = Float.valueOf(formatToThreeDecimal.format(getD1(optionChainInputDto.getUnderlyingValue(), Integer.valueOf(optionChainInputDto.getStrikePrice().substring(0, optionChainInputDto.getStrikePrice().length() - 2)), Constanst.RATE_OF_INTEREST, Constanst.DIVIDEND, optionChainInputDto.getImpliedVolatility(), optionChainInputDto.getDaysLeftToExpire())));
+                d2 = Float.valueOf(formatToThreeDecimal.format(getD2(optionChainInputDto.getUnderlyingValue(), Integer.valueOf(optionChainInputDto.getStrikePrice().substring(0, optionChainInputDto.getStrikePrice().length() - 2)), Constanst.RATE_OF_INTEREST, Constanst.DIVIDEND, optionChainInputDto.getImpliedVolatility(), optionChainInputDto.getDaysLeftToExpire())));
+                delta = Float.valueOf(formatToTwoDecimal.format(calculateDelta(Constanst.DIVIDEND, optionChainInputDto.getDaysLeftToExpire(), optionChainInputDto.getStrikePrice().substring(optionChainInputDto.getStrikePrice().length() - 2), d1)));
+                theta = Float.valueOf(formatToTwoDecimal.format(calculateTheta(optionChainInputDto.getUnderlyingValue(), d1, optionChainInputDto.getImpliedVolatility(), optionChainInputDto.getDaysLeftToExpire(), Constanst.DIVIDEND, delta, Constanst.RATE_OF_INTEREST, Integer.valueOf(optionChainInputDto.getStrikePrice().substring(0, optionChainInputDto.getStrikePrice().length() - 2)), d2, optionChainInputDto.getStrikePrice().substring(optionChainInputDto.getStrikePrice().length() - 2))));
+                gamma = Float.valueOf(formatToTwoDecimal.format(calculateGamma(d1, optionChainInputDto.getDaysLeftToExpire(), Constanst.DIVIDEND, optionChainInputDto.getUnderlyingValue(), optionChainInputDto.getImpliedVolatility())));
+                vega = Float.valueOf(formatToTwoDecimal.format(calculateVega(d1, optionChainInputDto.getDaysLeftToExpire(), Constanst.DIVIDEND, optionChainInputDto.getUnderlyingValue())));
+            }
+            optionChain.setGamma(gamma);
+            optionChain.setDelta(delta);
+            optionChain.setTheta(theta);
+            optionChain.setVega(vega);
             optionChainList.add(optionChain);
         }
         optionChainDao.saveAll(optionChainList);
@@ -76,26 +101,6 @@ public class OptionChainServiceImpl implements OptionChainService {
         oiChangeDto.setTimeList(timeList);
         return oiChangeDto;
     }
-
-    @Override
-    public  List<String> getStrikePriceForBuying(Integer underlyingValue,String indexType,Integer expiryDaysCount)
-    {
-        DecimalFormat formatToTwoDecimal = new DecimalFormat("0.00");
-        DecimalFormat formatToThreeDecimal = new DecimalFormat("0.000");
-        List<StrikePriceSelectionDto> strikePriceSelectionDtos=optionChainDao.getOptionChainDataForStrikePriceSelection(indexType);
-        for (StrikePriceSelectionDto strikePriceSelectionDto:strikePriceSelectionDtos) {
-            if(strikePriceSelectionDto.getImpliedVolatility()!=0) {
-               Double d1= Double.valueOf(formatToThreeDecimal.format(getD1(underlyingValue,Integer.valueOf(strikePriceSelectionDto.getStrikePrice().substring(0,strikePriceSelectionDto.getStrikePrice().length()-2)),10,0,strikePriceSelectionDto.getImpliedVolatility(),5)));
-               Double d2=Double.valueOf(formatToThreeDecimal.format(getD2(underlyingValue,Integer.valueOf(strikePriceSelectionDto.getStrikePrice().substring(0,strikePriceSelectionDto.getStrikePrice().length()-2)),10,0,strikePriceSelectionDto.getImpliedVolatility(),5)));
-               Double delta= Double.valueOf(formatToTwoDecimal.format(calculateDelta(0,5,strikePriceSelectionDto.getStrikePrice().substring(strikePriceSelectionDto.getStrikePrice().length()-2),d1)));
-               Double theta=Double.valueOf(formatToTwoDecimal.format(calculateTheta(underlyingValue,d1,strikePriceSelectionDto.getImpliedVolatility(),5,0,delta,10,Integer.valueOf(strikePriceSelectionDto.getStrikePrice().substring(0,strikePriceSelectionDto.getStrikePrice().length()-2)),d2,strikePriceSelectionDto.getStrikePrice().substring(strikePriceSelectionDto.getStrikePrice().length()-2))));
-               Double gamma=Double.valueOf(formatToTwoDecimal.format(calculateGamma(d1,5,0,underlyingValue,strikePriceSelectionDto.getImpliedVolatility())));
-               Double vega=Double.valueOf(formatToTwoDecimal.format(calculateVega(d1,5,0,underlyingValue)));
-               System.out.println(d1+" "+d2+" "+delta+" "+theta+" "+gamma+" "+vega+" "+strikePriceSelectionDto.getStrikePrice()+" "+strikePriceSelectionDto.getImpliedVolatility());
-            }
-        }
-        return null;
-    }
     public Double getRiskFreeRateOfInterest(Integer rateOfInterest)
     {
         return (double)rateOfInterest/100;
@@ -127,7 +132,7 @@ public class OptionChainServiceImpl implements OptionChainService {
                 .sqrt(getTimeToExpire(daysLeftToExpire)));
     }
 
-    public Double calculateDelta(Integer dividend,Integer timeToExpire,String optionType,Double d1)
+    public Double calculateDelta(Integer dividend,Integer timeToExpire,String optionType,Float d1)
     {
         Double delta=null;
         if(optionType.equalsIgnoreCase("pe"))
@@ -139,7 +144,7 @@ public class OptionChainServiceImpl implements OptionChainService {
         }
         return delta;
     }
-    public Double calculateTheta(Integer underlyingPrice,Double d1,Float impliedVolatility,Integer daysLeftToExpire,Integer dividend,Double delta,Integer rateOfInterest,Integer strikePrice,Double d2,String optionType)
+    public Double calculateTheta(Integer underlyingPrice,Float d1,Float impliedVolatility,Integer daysLeftToExpire,Integer dividend,Float delta,Integer rateOfInterest,Integer strikePrice,Float d2,String optionType)
     {
         Double theta=null;
         if(optionType.equalsIgnoreCase("ce"))
@@ -152,12 +157,12 @@ public class OptionChainServiceImpl implements OptionChainService {
         return theta;
     }
 
-    public Double calculateGamma(Double d1,Integer daysLeftToExpire,Integer dividend,Integer underlyingPrice,Float impliedVolatility)
+    public Double calculateGamma(Float d1,Integer daysLeftToExpire,Integer dividend,Integer underlyingPrice,Float impliedVolatility)
     {
         return ((((1/Math.sqrt((2*Math.PI)))*Math.exp(((-1*Math.pow(d1,2))/2)))*Math.exp(((-1*daysLeftToExpire)*getDividend(dividend))))/((underlyingPrice*getVolatility(impliedVolatility))*Math.sqrt(getTimeToExpire(daysLeftToExpire))));
     }
 
-    public Double calculateVega(Double d1,Integer daysLeftToExpire,Integer dividend,Integer underlyingPrice)
+    public Double calculateVega(Float d1,Integer daysLeftToExpire,Integer dividend,Integer underlyingPrice)
     {
         return (((((1/Math.sqrt((2*Math.PI)))*Math.exp(((-1*Math.pow(d1,2))/2)))*Math.exp(((-1*getTimeToExpire(daysLeftToExpire))*getDividend(dividend))))*underlyingPrice)*Math.sqrt(getTimeToExpire(daysLeftToExpire)))/100;
     }
@@ -173,4 +178,54 @@ public class OptionChainServiceImpl implements OptionChainService {
 
             return (1d - neg) * y + neg * (1d - y);
         }
+    @Override
+    public List<StrikePriceOutputDto> getDataForStrikePriceSelection(String indexType,String actionType,String optionType)
+    {
+        List<StrikePriceDto> strikePriceDtoList=optionChainDao.getDataForStrikePriceSelection(indexType,optionType);
+        List<StrikePriceOutputDto> strikePriceOutputDtoList=new ArrayList<>();
+        Set<String> set=new HashSet<>();
+        for (StrikePriceDto strikePriceDto: strikePriceDtoList) {
+            if(!set.contains(strikePriceDto.getStrikePrice())) {
+                set.add(strikePriceDto.getStrikePrice());
+                StrikePriceOutputDto strikePriceOutputDto = new StrikePriceOutputDto();
+                strikePriceOutputDto.setDelta(strikePriceDto.getDelta());
+                strikePriceOutputDto.setVega(strikePriceDto.getVega());
+                strikePriceOutputDto.setTheta(strikePriceDto.getTheta());
+                strikePriceOutputDto.setGamma(strikePriceDto.getGamma());
+                strikePriceOutputDto.setStrikePrice(strikePriceDto.getStrikePrice());
+                if(actionType.equalsIgnoreCase("buying")) {
+                    Float profit = null;
+                    if (indexType.equalsIgnoreCase("nifty")){
+                        profit = (50 * strikePriceDto.getDelta()) - strikePriceDto.getTheta();
+                        profit*=50;
+                }
+                else {
+                    profit = (100 * strikePriceDto.getDelta()) - strikePriceDto.getTheta();
+                    profit*=25;
+                }
+                    strikePriceOutputDto.setProfit(profit);
+                strikePriceOutputDtoList.add(strikePriceOutputDto);
+                }
+            }
+        }
+        return strikePriceOutputDtoList;
     }
+
+    @Override
+    public OIChangeDto getChangeInOIForStrikePrice(Integer strikePrice)
+    {
+        List<OpenInterestDto> putOpenInterestDtos=optionChainDao.getOpenInterestByStrikePrice(strikePrice+"PE");
+        List<OpenInterestDto> callOpenInterestDtos=optionChainDao.getOpenInterestByStrikePrice(strikePrice+"CE");
+        OIChangeDto oiChangeDto=new OIChangeDto();
+        List<Integer> oiChangeList=new ArrayList<>();
+        List<String> timeList=new ArrayList<>();
+        for(int i=0;i<putOpenInterestDtos.size();i++)
+        {
+            oiChangeList.add(putOpenInterestDtos.get(i).getOpenInterest()-callOpenInterestDtos.get(i).getOpenInterest());
+            timeList.add(putOpenInterestDtos.get(i).getTime());
+        }
+        oiChangeDto.setTimeList(timeList);
+        oiChangeDto.setOiChangeList(oiChangeList);
+        return oiChangeDto;
+    }
+}

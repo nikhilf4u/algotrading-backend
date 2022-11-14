@@ -14,6 +14,8 @@ input OptionChainInputDto
     strikePrice:String
     index:String
     impliedVolatility:Float
+    underlyingValue:Int
+    daysLeftToExpire:Int
 }
 type OptionChainForStrikePriceDto{
     priceList:[Float]
@@ -25,11 +27,21 @@ type OIChangeDto{
     timeList:[String]
 }
 
+type StrikePriceOutputDto{
+    strikePrice:String
+    delta:Float
+    theta:Float
+    gamma:Float
+    vega:Float
+    profit:Float
+}
+
 type Query{
     getOptionChainData : [OptionChainDto]
     getOptionChainDataForStrikePrice(strikePrice:String):OptionChainForStrikePriceDto
     getChangeInOIForIndex(index:String):OIChangeDto
-    getStrikePriceForBuying(underlyingValue:Int,indexType:String,expiryDaysCount:Int):[String]
+    getDataForStrikePriceSelection(indexType:String,actionType:String,optionType:String):[StrikePriceOutputDto]
+    getChangeInOpenInterestForStrikePrice(strikePrice:Int):OIChangeDto
 }
 type Mutation{
     saveOptionChainData(optionChainInputDtos:[OptionChainInputDto]) : Boolean

@@ -3,6 +3,7 @@ package com.trading.algotrading.resolvers;
 import com.trading.algotrading.dto.OIChangeDto;
 import com.trading.algotrading.dto.OptionChainDto;
 import com.trading.algotrading.dto.OptionChainForStrikePriceDto;
+import com.trading.algotrading.dto.StrikePriceOutputDto;
 import com.trading.algotrading.service.OptionChainService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,13 @@ public class QueryResolver implements GraphQLQueryResolver {
         return optionChainService.getChangeInOIForIndex(index);
     }
 
-    public  List<String> getStrikePriceForBuying(Integer underlyingValue,String indexType,Integer expiryDaysCount)
+    public List<StrikePriceOutputDto> getDataForStrikePriceSelection(String indexType,String actionType,String optionType)
     {
-        return  optionChainService.getStrikePriceForBuying(underlyingValue,indexType,expiryDaysCount);
+        return optionChainService.getDataForStrikePriceSelection(indexType,actionType,optionType);
+    }
+
+    public OIChangeDto getChangeInOpenInterestForStrikePrice(Integer strikePrice)
+    {
+        return optionChainService.getChangeInOIForStrikePrice(strikePrice);
     }
 }

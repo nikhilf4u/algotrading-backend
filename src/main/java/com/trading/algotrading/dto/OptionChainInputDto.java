@@ -13,4 +13,6 @@ public class OptionChainInputDto {
     private String strikePrice;
     private String index;
     private Float impliedVolatility;
+    private Integer daysLeftToExpire;
+    private Integer underlyingValue;
 }
