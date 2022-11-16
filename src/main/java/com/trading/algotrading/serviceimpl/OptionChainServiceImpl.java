@@ -46,6 +46,7 @@ public class OptionChainServiceImpl implements OptionChainService {
             optionChain.setTime(optionChainInputDto.getTime());
             optionChain.setStrikePrice(optionChainInputDto.getStrikePrice());
             optionChain.setPrice(optionChainInputDto.getPrice());
+            optionChain.setTotalTradedVolume(optionChainInputDto.getTotalTradedVolume());
             Float d1=null,d2=null,delta=null,theta=null,gamma=null,vega=null;
             if(optionChainInputDto.getImpliedVolatility()!=0) {
                 d1 = Float.valueOf(formatToThreeDecimal.format(getD1(optionChainInputDto.getUnderlyingValue(), Integer.valueOf(optionChainInputDto.getStrikePrice().substring(0, optionChainInputDto.getStrikePrice().length() - 2)), Constanst.RATE_OF_INTEREST, Constanst.DIVIDEND, optionChainInputDto.getImpliedVolatility(), optionChainInputDto.getDaysLeftToExpire())));

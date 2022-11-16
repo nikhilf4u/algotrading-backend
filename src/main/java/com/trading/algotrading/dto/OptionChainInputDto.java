@@ -15,4 +15,5 @@ public class OptionChainInputDto {
     private Float impliedVolatility;
     private Integer daysLeftToExpire;
     private Integer underlyingValue;
+    private Integer totalTradedVolume;
 }

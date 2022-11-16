@@ -16,6 +16,7 @@ input OptionChainInputDto
     impliedVolatility:Float
     underlyingValue:Int
     daysLeftToExpire:Int
+    totalTradedVolume:Int
 }
 type OptionChainForStrikePriceDto{
     priceList:[Float]
