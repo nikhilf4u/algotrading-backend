@@ -11,5 +11,5 @@ public class StrikePriceOutputDto {
     private Float theta;
     private Float gamma;
     private Float vega;
-    private Float profit;
+    private Integer volume;
 }

@@ -67,21 +67,38 @@ public class OptionChainServiceImpl implements OptionChainService {
     }
 
     @Override
-    public OptionChainForStrikePriceDto getOptionChainDataForStrikePrice(String strikePrice)
+    public OptionChainForStrikePriceDto getOptionChainDataForStrikePrice(Integer strikePrice)
     {
-        List<OptionChainDto> optionChainDtoList=optionChainDao.getOptionChainDataForStrikePrice(strikePrice);
-        List<Float> priceList=new ArrayList<>();
-        List<Integer> openInterestList=new ArrayList<>();
-        List<String> timeList=new ArrayList<>();
+        List<OptionChainDto> optionChainCallDtoList=optionChainDao.getOptionChainDataForStrikePrice(strikePrice+"CE");
+        List<OptionChainDto> optionChainPutDtoList=optionChainDao.getOptionChainDataForStrikePrice(strikePrice+"PE");
+        List<Float> callPriceList=new ArrayList<>();
+        List<Integer> callOpenInterestList=new ArrayList<>();
+        List<String> callTimeList=new ArrayList<>();
+        List<Float> putPriceList=new ArrayList<>();
+        List<Integer> putOpenInterestList=new ArrayList<>();
+        List<String> putTimeList=new ArrayList<>();
+        List<Integer> overallChangeInOI=new ArrayList<>();
         OptionChainForStrikePriceDto optionChainForStrikePriceDto=new OptionChainForStrikePriceDto();
-        for (OptionChainDto optionChainDto:optionChainDtoList) {
-            priceList.add(optionChainDto.getPrice());
-            openInterestList.add(optionChainDto.getOpenInterest());
-            timeList.add(optionChainDto.getTime());
+        for (OptionChainDto optionChainDto:optionChainCallDtoList) {
+            callPriceList.add(optionChainDto.getPrice());
+            callOpenInterestList.add(optionChainDto.getOpenInterest());
+            callTimeList.add(optionChainDto.getTime());
         }
-        optionChainForStrikePriceDto.setPriceList(priceList);
-        optionChainForStrikePriceDto.setTimeList(timeList);
-        optionChainForStrikePriceDto.setOpenInterestList(openInterestList);
+        for (OptionChainDto optionChainDto:optionChainPutDtoList) {
+            putPriceList.add(optionChainDto.getPrice());
+            putOpenInterestList.add(optionChainDto.getOpenInterest());
+            putTimeList.add(optionChainDto.getTime());
+        }
+        for(int i=0;i<callOpenInterestList.size();i++) {
+            overallChangeInOI.add(putOpenInterestList.get(i) - callOpenInterestList.get(i));
+        }
+        optionChainForStrikePriceDto.setCallPriceList(callPriceList);
+        optionChainForStrikePriceDto.setCallTimeList(callTimeList);
+        optionChainForStrikePriceDto.setCallOpenInterestList(callOpenInterestList);
+        optionChainForStrikePriceDto.setPutPriceList(putPriceList);
+        optionChainForStrikePriceDto.setPutTimeList(putTimeList);
+        optionChainForStrikePriceDto.setPutOpenInterestList(putOpenInterestList);
+        optionChainForStrikePriceDto.setOverallChangeInOIList(overallChangeInOI);
         return optionChainForStrikePriceDto;
     }
 
@@ -194,39 +211,10 @@ public class OptionChainServiceImpl implements OptionChainService {
                 strikePriceOutputDto.setTheta(strikePriceDto.getTheta());
                 strikePriceOutputDto.setGamma(strikePriceDto.getGamma());
                 strikePriceOutputDto.setStrikePrice(strikePriceDto.getStrikePrice());
-                if(actionType.equalsIgnoreCase("buying")) {
-                    Float profit = null;
-                    if (indexType.equalsIgnoreCase("nifty")){
-                        profit = (50 * strikePriceDto.getDelta()) - strikePriceDto.getTheta();
-                        profit*=50;
-                }
-                else {
-                    profit = (100 * strikePriceDto.getDelta()) - strikePriceDto.getTheta();
-                    profit*=25;
-                }
-                    strikePriceOutputDto.setProfit(profit);
+                strikePriceOutputDto.setVolume(strikePriceDto.getVolume());
                 strikePriceOutputDtoList.add(strikePriceOutputDto);
                 }
             }
-        }
         return strikePriceOutputDtoList;
-    }
-
-    @Override
-    public OIChangeDto getChangeInOIForStrikePrice(Integer strikePrice)
-    {
-        List<OpenInterestDto> putOpenInterestDtos=optionChainDao.getOpenInterestByStrikePrice(strikePrice+"PE");
-        List<OpenInterestDto> callOpenInterestDtos=optionChainDao.getOpenInterestByStrikePrice(strikePrice+"CE");
-        OIChangeDto oiChangeDto=new OIChangeDto();
-        List<Integer> oiChangeList=new ArrayList<>();
-        List<String> timeList=new ArrayList<>();
-        for(int i=0;i<putOpenInterestDtos.size();i++)
-        {
-            oiChangeList.add(putOpenInterestDtos.get(i).getOpenInterest()-callOpenInterestDtos.get(i).getOpenInterest());
-            timeList.add(putOpenInterestDtos.get(i).getTime());
-        }
-        oiChangeDto.setTimeList(timeList);
-        oiChangeDto.setOiChangeList(oiChangeList);
-        return oiChangeDto;
     }
 }

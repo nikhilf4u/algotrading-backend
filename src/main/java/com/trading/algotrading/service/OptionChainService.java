@@ -8,11 +8,10 @@ public interface OptionChainService {
     List<OptionChainDto> getOptionChainData();
     Boolean saveOptionChainData(List<OptionChainInputDto> priceAndOpenInterestInputDtos);
 
-    OptionChainForStrikePriceDto getOptionChainDataForStrikePrice(String strikePrice);
+    OptionChainForStrikePriceDto getOptionChainDataForStrikePrice(Integer strikePrice);
 
     OIChangeDto getChangeInOIForIndex(String index);
 
     List<StrikePriceOutputDto> getDataForStrikePriceSelection(String indexType,String actionType,String optionType);
 
-    OIChangeDto getChangeInOIForStrikePrice(Integer strikePrice);
 }

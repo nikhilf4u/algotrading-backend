@@ -19,7 +19,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         System.out.print(">>> getAllPriceAndOpenInterest");
         return optionChainService.getOptionChainData();
     }
-    public OptionChainForStrikePriceDto getOptionChainDataForStrikePrice(String strikePrice)
+    public OptionChainForStrikePriceDto getOptionChainDataForStrikePrice(Integer strikePrice)
     {
         return optionChainService.getOptionChainDataForStrikePrice(strikePrice);
     }
@@ -34,8 +34,4 @@ public class QueryResolver implements GraphQLQueryResolver {
         return optionChainService.getDataForStrikePriceSelection(indexType,actionType,optionType);
     }
 
-    public OIChangeDto getChangeInOpenInterestForStrikePrice(Integer strikePrice)
-    {
-        return optionChainService.getChangeInOIForStrikePrice(strikePrice);
-    }
 }

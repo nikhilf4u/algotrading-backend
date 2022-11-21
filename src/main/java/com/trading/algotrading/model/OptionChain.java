@@ -36,7 +36,6 @@ public class OptionChain {
     private Float vega;
     @Column(name="days_left_to_expire")
     private Integer daysLeftToExpire;
-
     @Column(name="total_traded_volume")
     private Integer totalTradedVolume;
 }

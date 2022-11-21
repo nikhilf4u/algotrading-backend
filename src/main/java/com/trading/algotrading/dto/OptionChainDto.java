@@ -5,5 +5,4 @@ public interface OptionChainDto {
    public Integer getOpenInterest();
    public String getTime();
    public String getStrikePrice();
-
 }

@@ -8,7 +8,13 @@ import java.util.List;
 @Getter
 @Setter
 public class OptionChainForStrikePriceDto {
-    List<Float> priceList;
-    List<Integer> openInterestList;
-    List<String> timeList;
+    List<Float> callPriceList;
+    List<Integer> callOpenInterestList;
+    List<String> callTimeList;
+    List<Float> putPriceList;
+    List<Integer> putOpenInterestList;
+    List<String> putTimeList;
+    List<Integer> callVolumeList;
+    List<Integer> putVolumeList;
+    List<Integer> overallChangeInOIList;
 }

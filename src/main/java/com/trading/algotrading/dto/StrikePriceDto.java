@@ -6,4 +6,5 @@ public interface StrikePriceDto {
     Float getTheta();
     Float getGamma();
     Float getVega();
+    Integer getVolume();
 }

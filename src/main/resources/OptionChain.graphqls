@@ -19,9 +19,13 @@ input OptionChainInputDto
     totalTradedVolume:Int
 }
 type OptionChainForStrikePriceDto{
-    priceList:[Float]
-    openInterestList:[Int]
-    timeList:[String]
+    callPriceList:[Float]
+    callOpenInterestList:[Int]
+    callTimeList:[String]
+    putPriceList:[Float]
+    putOpenInterestList:[Int]
+    putTimeList:[String]
+    overallChangeInOIList:[Int]
 }
 type OIChangeDto{
     oiChangeList:[Int]
@@ -34,15 +38,14 @@ type StrikePriceOutputDto{
     theta:Float
     gamma:Float
     vega:Float
-    profit:Float
+    volume:Int
 }
 
 type Query{
     getOptionChainData : [OptionChainDto]
-    getOptionChainDataForStrikePrice(strikePrice:String):OptionChainForStrikePriceDto
+    getOptionChainDataForStrikePrice(strikePrice:Int):OptionChainForStrikePriceDto
     getChangeInOIForIndex(index:String):OIChangeDto
     getDataForStrikePriceSelection(indexType:String,actionType:String,optionType:String):[StrikePriceOutputDto]
-    getChangeInOpenInterestForStrikePrice(strikePrice:Int):OIChangeDto
 }
 type Mutation{
     saveOptionChainData(optionChainInputDtos:[OptionChainInputDto]) : Boolean
