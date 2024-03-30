@@ -1,9 +1,7 @@
 package com.trading.algotrading.resolvers;
 
-import com.trading.algotrading.dto.OIChangeDto;
-import com.trading.algotrading.dto.OptionChainDto;
-import com.trading.algotrading.dto.OptionChainForStrikePriceDto;
-import com.trading.algotrading.dto.StrikePriceOutputDto;
+import com.trading.algotrading.dto.*;
+import com.trading.algotrading.service.ContractService;
 import com.trading.algotrading.service.OptionChainService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,9 @@ import java.util.List;
 public class QueryResolver implements GraphQLQueryResolver {
     @Autowired
     OptionChainService optionChainService;
+
+    @Autowired
+    ContractService contractService;
     public List<OptionChainDto> getOptionChainData()
     {
         System.out.print(">>> getAllPriceAndOpenInterest");
@@ -24,6 +25,11 @@ public class QueryResolver implements GraphQLQueryResolver {
         return optionChainService.getOptionChainDataForStrikePrice(strikePrice);
     }
 
+    public ContractForStrikePriceDto getContractsForIndexAndStrikePrice(String indexType,String strikePrice)
+    {
+        return contractService.getContractsForIndexAndStrikePrice(indexType,strikePrice);
+    }
+
     public OIChangeDto getChangeInOIForIndex(String index)
     {
         return optionChainService.getChangeInOIForIndex(index);
@@ -32,6 +38,14 @@ public class QueryResolver implements GraphQLQueryResolver {
     public List<StrikePriceOutputDto> getDataForStrikePriceSelection(String indexType,String actionType,String optionType)
     {
         return optionChainService.getDataForStrikePriceSelection(indexType,actionType,optionType);
+    }
+
+    public List<String> getStrikePriceList(String indexType) {
+        return contractService.getStrikePriceList(indexType);
+    }
+
+    public ContractSummaryDto getContractSummary() {
+        return contractService.getContractSummary();
     }
 
 }

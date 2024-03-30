@@ -1,0 +1,45 @@
+type ContractDto
+{
+    price:String
+    openInterest:String
+    time:String
+    strikePrice:String
+    value:String
+    atp:String
+}
+
+input ContractInputDto
+{
+    id:Int
+    price:String
+    openInterest:String
+    time:String
+    strikePrice:String
+    value:String
+    atp:String
+    index:String
+}
+type ContractForStrikePriceDto{
+    callPriceList:[String]
+    callOpenInterestList:[String]
+    callTimeList:[String]
+    putPriceList:[String]
+    putOpenInterestList:[String]
+    putTimeList:[String]
+    callAtpList:[String]
+    putAtpList:[String]
+    callValueList:[String]
+    putValueList:[String]
+}
+
+type ContractSummaryDto{
+    putAtpSumList:[String]
+    callAtpSumList:[String]
+    timeList:[String]
+}
+
+extend type Query {
+    getContractsForIndexAndStrikePrice(indexType:String,strikePrice:String):ContractForStrikePriceDto
+    getStrikePriceList(indexType:String):[String]
+    getContractSummary:ContractSummaryDto
+}
