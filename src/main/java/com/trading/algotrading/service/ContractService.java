@@ -9,8 +9,10 @@ import java.util.List;
 
 public interface ContractService {
 
-    ContractForStrikePriceDto getContractsForIndexAndStrikePrice(String index,String strikePrice);
-    void saveContracts() throws IOException;
+    ContractForStrikePriceDto getContractsForIndexAndStrikePrice(String index,String strikePrice,boolean displayDataForSelectedStrikePrice);
+    void saveNiftyContracts() throws IOException;
+
+    void saveNiftyBankContracts() throws IOException;
 
     List<String> getStrikePriceList(String indexType);
 

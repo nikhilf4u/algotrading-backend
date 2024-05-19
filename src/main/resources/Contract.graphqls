@@ -30,6 +30,7 @@ type ContractForStrikePriceDto{
     putAtpList:[String]
     callValueList:[String]
     putValueList:[String]
+    selectedStrikePrice:String
 }
 
 type ContractSummaryDto{
@@ -39,7 +40,7 @@ type ContractSummaryDto{
 }
 
 extend type Query {
-    getContractsForIndexAndStrikePrice(indexType:String,strikePrice:String):ContractForStrikePriceDto
+    getContractsForIndexAndStrikePrice(indexType:String,strikePrice:String,displayDataForSelectedStrikePrice:Boolean):ContractForStrikePriceDto
     getStrikePriceList(indexType:String):[String]
     getContractSummary:ContractSummaryDto
 }

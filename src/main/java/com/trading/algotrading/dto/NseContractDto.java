@@ -18,4 +18,5 @@ public class NseContractDto {
     Long volume;
     Long value;
     Long openInterest;
+    Double underlyingValue;
 }

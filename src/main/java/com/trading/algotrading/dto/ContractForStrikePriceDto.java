@@ -18,4 +18,5 @@ public class ContractForStrikePriceDto {
     List<String> putValueList;
     List<String> callAtpList;
     List<String> putAtpList;
+    String selectedStrikePrice;
 }
