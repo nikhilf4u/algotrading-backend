@@ -2,6 +2,7 @@ package com.trading.algotrading.resolvers;
 
 import com.trading.algotrading.dto.ContractInputDto;
 import com.trading.algotrading.dto.OptionChainInputDto;
+import com.trading.algotrading.service.ContractDataService;
 import com.trading.algotrading.service.ContractService;
 import com.trading.algotrading.service.OptionChainService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
@@ -18,6 +19,8 @@ public class MutationResolver implements GraphQLMutationResolver {
     @Autowired
     ContractService contractService;
 
+    @Autowired
+    ContractDataService contractDataService;
     public Boolean saveOptionChainData(List<OptionChainInputDto> optionChainInputDtos){
         return optionChainService.saveOptionChainData(optionChainInputDtos);
     }

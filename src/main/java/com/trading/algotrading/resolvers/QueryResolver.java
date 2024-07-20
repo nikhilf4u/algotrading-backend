@@ -1,6 +1,7 @@
 package com.trading.algotrading.resolvers;
 
 import com.trading.algotrading.dto.*;
+import com.trading.algotrading.service.ContractDataService;
 import com.trading.algotrading.service.ContractService;
 import com.trading.algotrading.service.OptionChainService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
@@ -15,6 +16,10 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @Autowired
     ContractService contractService;
+
+    @Autowired
+    ContractDataService contractDataService;
+
     public List<OptionChainDto> getOptionChainData()
     {
         System.out.print(">>> getAllPriceAndOpenInterest");
@@ -28,6 +33,11 @@ public class QueryResolver implements GraphQLQueryResolver {
     public ContractForStrikePriceDto getContractsForIndexAndStrikePrice(String indexType,String strikePrice,boolean displayDataForSelectedStrikePrice)
     {
         return contractService.getContractsForIndexAndStrikePrice(indexType,strikePrice,displayDataForSelectedStrikePrice);
+    }
+
+    public StrikePriceContractDataDto getContractDataForIndexAndStrikePrice(String indexType,Integer strikePrice,boolean displayDataForSelectedStrikePrice)
+    {
+        return contractDataService.getContractDataForIndexAndStrikePrice(indexType,strikePrice,displayDataForSelectedStrikePrice);
     }
 
     public OIChangeDto getChangeInOIForIndex(String index)
@@ -44,8 +54,14 @@ public class QueryResolver implements GraphQLQueryResolver {
         return contractService.getStrikePriceList(indexType);
     }
 
+    public List<Integer> getContractDataStrikePriceList(String indexType) {
+        return contractDataService.getContractDataStrikePriceList(indexType);
+    }
     public ContractSummaryDto getContractSummary() {
         return contractService.getContractSummary();
     }
 
+    public List<AtpDataDto> getAtpData() {
+        return contractDataService.getAtpData();
+    }
 }

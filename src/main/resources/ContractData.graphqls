@@ -1,0 +1,33 @@
+scalar Double
+type StrikePriceContractDataDto {
+    callLastPriceList:[Double]
+    callMarketPriceValueList:[Double]
+    callTimeList:[String]
+    putLastPriceList:[Double]
+    putMarketPriceValueList:[Double]
+    putTimeList:[String]
+    callATP1List:[Double]
+    putATP1List:[Double]
+    callAtp1ValueList:[Double]
+    putAtp1ValueList:[Double]
+    callATP3List:[Double]
+    putATP3List:[Double]
+    callAtp3ValueList:[Double]
+    putAtp3ValueList:[Double]
+    selectedStrikePrice:Int
+}
+
+type AtpDataDto {
+    strikePrice:Int
+    optionType:String
+    lastPrice:Double
+    atp3:Double
+    atp1:Double
+    time:String
+}
+
+extend type Query {
+    getContractDataForIndexAndStrikePrice(indexType:String,strikePrice:Int,displayDataForSelectedStrikePrice:Boolean):StrikePriceContractDataDto
+    getContractDataStrikePriceList(indexType:String):[Int]
+    getAtpData:[AtpDataDto]
+}

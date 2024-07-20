@@ -112,7 +112,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    @Scheduled(fixedRate = 300000)
+//    @Scheduled(fixedRate = 300000)
     public void saveNiftyBankContracts() {
         try {
 //            System.out.println(new Date().getSeconds());
@@ -187,7 +187,7 @@ public class ContractServiceImpl implements ContractService {
 
 
     @Override
-    @Scheduled(fixedRate = 300000)
+//    @Scheduled(fixedRate = 300000)
     public void saveNiftyContracts() {
         try {
 //            System.out.println(new Date().getSeconds());
@@ -217,6 +217,7 @@ public class ContractServiceImpl implements ContractService {
             if(niftyExipryDate == null) {
                 niftyExipryDate = getMinDate(data.getData());
             }
+            //        niftyExipryDate = "06-Jun-2024";
             for(NseContractDto nseContractDto : data.getData()) {
                 if(nseContractDto.getExpiryDate().equalsIgnoreCase(niftyExipryDate)) {
                     Contract contract = new Contract();
